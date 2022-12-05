@@ -10,12 +10,6 @@ const readInputFile = (relativePath: string = INPUT_PATH) => {
 
 const parseData = (data: string) => data.split('\n')
 
-const playerShapeIndex = {
-  'X': 'rock',
-  'Y': 'paper',
-  'Z': 'scissors',
-} as const
-
 const opponentShapeIndex = {
   'A': 'rock',
   'B': 'paper',
@@ -23,11 +17,17 @@ const opponentShapeIndex = {
 } as const
 
 const shapeScoreIndex = {
-  'X': 1,
-  'Y': 2,
-  'Z': 3,
+  'rock': 1,
+  'paper': 2,
+  'scissors': 3,
 } as const
 
+
+const desiredWinnderIndex = {
+  'X': 'opponent',
+  'Y': 'draw',
+  'Z': 'player',
+} as const
 
 type Shape = 'rock' | 'paper' | 'scissors'
 
@@ -38,6 +38,35 @@ const roundWinnerScoreIndex = {
   'draw': 3,
   'opponent': 0,
 } as const
+
+const getPlayerShape = (opponentShape: Shape, desiredWinner: Winner): Shape => {
+  switch (desiredWinner) {
+    case 'player': {
+      if (opponentShape === 'paper') {
+        return 'scissors'
+      }
+      if (opponentShape === 'rock') {
+        return 'paper'
+      }
+      if (opponentShape === 'scissors') {
+        return 'rock'
+      }
+    }
+    case 'opponent': {
+      if (opponentShape === 'paper') {
+        return 'rock'
+      }
+      if (opponentShape === 'scissors') {
+        return 'paper'
+      }
+      if (opponentShape === 'rock') {
+        return 'scissors'
+      }
+    }
+    case 'draw':
+      return opponentShape
+  }
+}
 
 const resolveWinner = (opponent: Shape, player: Shape) => {
   if (opponent === "rock" && player === "rock") {
@@ -85,15 +114,19 @@ const predictScore = () => {
   const rounds = parseData(data)
 
   const score = rounds.reduce((acc, current) => {
-    const [opponent, player]  = current.split(' ') as ['A' | 'B' | 'C', 'X' | 'Y' | 'Z']
+    const [opponentShapeCode, desiredWinnerCode]  = current.split(' ') as ['A' | 'B' | 'C', 'X' | 'Y' | 'Z']
 
-    const shapeScore = shapeScoreIndex[player]
+    const opponentShape = opponentShapeIndex[opponentShapeCode]
 
-    const opponentShape = opponentShapeIndex[opponent]
-    const playerShape = playerShapeIndex[player]
+    const desiredWinner = desiredWinnderIndex[desiredWinnerCode]
+
+    const playerShape = getPlayerShape(opponentShape, desiredWinner)
+
     const winner = resolveWinner(opponentShape, playerShape)
 
     const roundWinnerScore = roundWinnerScoreIndex[winner]
+
+    const shapeScore = shapeScoreIndex[playerShape]
 
     const scoreForRound = shapeScore + roundWinnerScore
 
