@@ -30,7 +30,7 @@ const reduceCaloriesToTotals = (calories: string[]) =>
   );
 
 
-const findHighestTotal = (totals: number[]) => totals.sort((a, b) => b - a)[0];
+const sortDesc = (totals: number[]) => totals.sort((a, b) => b - a);
 
 const findHighestCalories = () => {
   const data = readInputFile()
@@ -39,8 +39,15 @@ const findHighestCalories = () => {
 
   const totals = reduceCaloriesToTotals(calories)
 
-  const highest = findHighestTotal(totals)
-  console.log(highest)
+  const sorted = sortDesc(totals)
+
+  const top3 = sorted.slice(0, 3)
+
+  const top3Total = top3.reduce((acc, current) => acc + current, 0)
+
+  console.log('Calories carried by top Elf:', sorted[0])
+
+  console.log('Calories carried by top three Elves:', top3Total)
 }
 
 findHighestCalories()
