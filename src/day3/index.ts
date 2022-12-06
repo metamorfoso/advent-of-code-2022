@@ -29,6 +29,42 @@ const findPrioritySum = () => {
 
   const priorityReference = buildPriorityReference()
 
+  const groupedRucksacks = rucksacks.reduce((acc, rucksack, index) => {
+    const lastGroup = acc[acc.length - 1]
+
+    if (lastGroup.length === 3) {
+      // start next group
+      return [
+        ...acc,
+        [rucksack],
+      ]
+    }
+
+    // add to last group
+    return [
+      ...acc.slice(0, acc.length - 1),
+      [...lastGroup, rucksack]
+    ]
+  }, [[]] as string[][])
+
+
+  const badgeSum = groupedRucksacks.reduce((tally, rucksackGroup) => {
+    const [ rucksack1, rucksack2, rucksack3 ] = rucksackGroup
+    const [groupBadge] = rucksack1
+      .split('')
+      .filter((item) => rucksack2.includes(item) && rucksack3.includes(item))
+
+    const groupBadgePriority = priorityReference.get(groupBadge)
+
+    if (!groupBadgePriority) {
+      throw new Error(`Failed to look up priority for ${groupBadgePriority}`)
+    }
+
+    return tally + groupBadgePriority
+  }, 0)
+
+  console.log('Sum of item priorities of the badge of all three-Elf groups:', badgeSum)
+
   const prioritySum = rucksacks.reduce((priorityTally, rucksack) => {
     // split 'rucksack' in half
     const half1 = rucksack.slice(0, rucksack.length / 2).split('')
