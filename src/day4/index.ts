@@ -27,15 +27,15 @@ const findOverlappingSections = () => {
     const [range1LowerBound, range1UpperBound] = parseRangeBounds(rawRange1)
     const [range2LowerBound, range2UpperBound] = parseRangeBounds(rawRange2)
 
-    // determine overlap (full)
+    // determine overlap (partial)
     const hasOverlap =
-      (range1LowerBound >= range2LowerBound && range1UpperBound <= range2UpperBound) ||
-      (range2LowerBound >= range1LowerBound && range2UpperBound <= range1UpperBound)
+      (range1UpperBound >= range2LowerBound && range1LowerBound <= range2UpperBound) ||
+      (range2UpperBound >= range1LowerBound && range2LowerBound <= range1UpperBound)
 
     return hasOverlap
   })
 
-  console.log('Number of assignment pairs with full overlap:', overlappingSections.length)
+  console.log('Number of assignment pairs with partial overlap:', overlappingSections.length)
 }
 
 findOverlappingSections()
