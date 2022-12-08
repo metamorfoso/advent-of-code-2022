@@ -1,9 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 
-// import initialArrangement from './input/initialArrangement'
-
-// const INPUT_PATH = './input/rearrangementProceedure.txt'
 const INPUT_PATH = './input.txt'
 
 const readInputFile = (relativePath: string = INPUT_PATH) => {
@@ -42,19 +39,17 @@ const rearrangeCrates = () => {
         .map((char) => parseInt(char, 10))
         .filter((parsed) => !Number.isNaN(parsed))
 
-      // apply each instruction to stacks map
-      Array.from({ length: crateCount }).forEach(() => {
-        const originIndex = from - 1
-        const destinationIndex = to - 1
+      // apply each instruction to stacks
+      const originIndex = from - 1
+      const destinationIndex = to - 1
 
-        const crate = stacks[originIndex].pop()
+      const crates = stacks[originIndex].slice(-crateCount)
 
-        if (!crate) {
-          throw new Error(`Could not execute line: ${line}. No more crates in stack ${originIndex}`)
-        }
+      const updatedOriginStack = stacks[originIndex].slice(0, -crateCount)
+      const updatedDestinationStack = [...stacks[destinationIndex], ...crates]
 
-        stacks[destinationIndex].push(crate)
-      })
+      stacks[originIndex] = updatedOriginStack
+      stacks[destinationIndex] = updatedDestinationStack
     }
 
     // parse remaning lines as description of the initial stack
