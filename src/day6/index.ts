@@ -13,7 +13,7 @@ const filterUnique = (chars: string[]): string[] => {
   return Array.from(charsSet)
 }
 
-const markerLength = 4
+const markerLength = 14
 
 const identifyStartOfPacket = () => {
   const data = readInputFile(INPUT_PATH)
